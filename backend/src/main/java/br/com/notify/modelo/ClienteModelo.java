@@ -6,7 +6,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
 
 @Entity
 @Table(name = "clientes")
@@ -16,12 +15,12 @@ public class ClienteModelo {
 
     @Id
     private Integer pedido;
-    private Date dataVencimento;
+    private String dataVencimento;
     private String cliente;
     private String email;
-    private Integer telefone;
+    private String telefone;
     private String produto;
-    private Integer cpf;
-    private Integer cnpj;
+    private String cpf;
+    private String cnpj;
     private String razaoSocial;
 }
