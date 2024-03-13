@@ -42,10 +42,10 @@ public class ClienteServico {
             return new ResponseEntity<RespostaModelo>(rm, HttpStatus.BAD_REQUEST);
         }else if (cm.getCpf().equals("")){
             rm.setMensagem("CPF é obrigatório.");
-            return new ResponseEntity<RespostaModelo>(rm,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<RespostaModelo>(rm, HttpStatus.BAD_REQUEST);
         }else if(!cm.getCnpj().equals("") && cm.getRazaoSocial().equals("")){
             rm.setMensagem("Se for pessoa jurídica, CNPJ e Razão Social são obrigatórios.");
-            return new ResponseEntity<RespostaModelo>(rm,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<RespostaModelo>(rm, HttpStatus.BAD_REQUEST);
         }else{
             return new ResponseEntity<ClienteModelo>(cr.save(cm), HttpStatus.CREATED);
         }
