@@ -1,73 +1,43 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import * as Papa from 'papaparse'; // Importa a biblioteca PapaParse para lidar com arquivos CSV
 
 function UploadFile() {
     const [file, setFile] = useState(null);
 
-    const handleFileChange = (event) => {
-        const selectedFile = event.target.files[0];
-        setFile(selectedFile);
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
     };
 
-    const handleUpload = () => {
+    const handleUpload = async () => {
         if (file) {
-            // Leitura do arquivo CSV
-            const reader = new FileReader();
-            reader.onload = () => {
-                // Conversão para JSON
-                const csvData = reader.result;
-                const jsonData = convertCsvToJson(csvData);
+            try {
+                // Realiza a leitura do arquivo CSV
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    const csvData = event.target.result;
 
-                // Envio do JSON para o backend
-                sendJsonToBackend(jsonData);
-            };
-            reader.readAsText(file);
+                    // Converte os dados do arquivo CSV para um array
+                    const { data } = Papa.parse(csvData, { header: true });
+
+                    // Envia o array para o servidor
+                    const response = await axios.post('http://localhost:8080/cadastrar-multiplos', data);
+
+                    console.log(response.data);
+                };
+
+                reader.readAsText(file); // Inicia a leitura do arquivo como texto
+            } catch (error) {
+                console.error('Erro ao enviar arquivo:', error);
+            }
         } else {
-            alert('Por favor, selecione um arquivo CSV.');
+            console.error('Nenhum arquivo selecionado.');
         }
-    };
-
-    // Função para converter CSV para JSON
-    const convertCsvToJson = (csvData) => {
-        // Lógica de conversão do CSV para JSON aqui
-        const lines = csvData.split('\n');
-        const result = [];
-        const headers = lines[0].split(',');
-        for (let i = 1; i < lines.length; i++) {
-            const obj = {};
-            const currentLine = lines[i].split(',');
-            for (let j = 0; j < headers.length; j++) {
-                obj[headers[j]] = currentLine[j];
-            }
-            result.push(obj);
-        }
-        return result;
-    };
-
-    // Função para enviar JSON para o backend
-    const sendJsonToBackend = (jsonData) => {
-        fetch('http://localhost:8080/clientes/cadastrar-multiplos', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(jsonData)
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('Dados do arquivo CSV foram enviados com sucesso!');
-            } else {
-                alert('Erro ao enviar os dados do arquivo CSV.');
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao enviar requisição:', error);
-        });
     };
 
     return (
         <div>
-            <h1>Upload de Arquivo CSV e Envio para o Backend</h1>
-            <input type="file" onChange={handleFileChange} accept=".csv" />
+            <input type="file" onChange={handleFileChange} />
             <button onClick={handleUpload}>Enviar</button>
         </div>
     );
