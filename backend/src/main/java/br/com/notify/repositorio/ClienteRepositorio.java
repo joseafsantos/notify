@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClienteRepositorio extends CrudRepository<ClienteModelo, Integer> {
+    Iterable<ClienteModelo> findByDataVencimento(String dataVencimento);
 
 }

@@ -9,7 +9,7 @@ function Tabela() {
 
     const fetchDados = async () => {
         try {
-            const response = await fetch('http://seu-backend.com/dados');
+            const response = await fetch('http://localhost:8080/listar');
             if (!response.ok) {
                 throw new Error('Erro ao carregar dados do servidor');
             }
@@ -18,6 +18,11 @@ function Tabela() {
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
         }
+    };
+
+    const enviarEmail = (email) => {
+        // Implemente aqui a lógica para enviar e-mails para o endereço especificado
+        console.log(`Enviando e-mail para: ${email}`);
     };
 
     return (
@@ -34,6 +39,7 @@ function Tabela() {
                         <th>Produto</th>
                         <th>CPF</th>
                         <th>CNPJ</th>
+                        <th>Notificar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,6 +53,9 @@ function Tabela() {
                             <td>{item.produto}</td>
                             <td>{item.cpf}</td>
                             <td>{item.cnpj}</td>
+                            <td>
+                                <button onClick={() => enviarEmail(item.email)}>Notificar</button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
