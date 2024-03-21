@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -44,7 +45,7 @@ public class ClienteControle {
     private EmailServico es;
 
     @GetMapping("/buscar-email")
-    public ResponseEntity<?> buscarEmail(@RequestBody String dataString){
+    public ResponseEntity<?> buscarEmail(@RequestParam String dataString){
         try {
             Iterable<String> emails = es.buscarEmail(dataString);
             return ResponseEntity.ok(emails);
@@ -53,8 +54,12 @@ public class ClienteControle {
         }
     }
     @PostMapping("/enviar-email")
-    public ResponseEntity<?> enviarEmail(@RequestParam("dataVencimento") String dataVencimento, @RequestParam("assunto") String assunto, @RequestParam("conteudo") String conteudo) {
+    public ResponseEntity<?> enviarEmail(@RequestBody Map<String, String> requestBody) {
         try {
+            String dataVencimento = requestBody.get("dataVencimento");
+            String assunto = requestBody.get("assunto");
+            String conteudo = requestBody.get("conteudo");
+
             // Buscar e-mails por data
             Iterable<String> destinatariosIterable = es.buscarEmail(dataVencimento);
             List<String> destinatarios = new ArrayList<>();
@@ -68,6 +73,7 @@ public class ClienteControle {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao enviar e-mails: " + e.getMessage());
         }
     }
+
 
     @GetMapping("")
     public String rota() {

@@ -62,19 +62,19 @@ public class EmailServico {
     @Autowired
     private ClienteRepositorio cr;
 
-    public Iterable<String> buscarEmail(String dataString){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public Iterable<String> buscarEmail(String dataString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
         LocalDate data = LocalDate.parse(dataString, formatter);
 
-        String dataStr = data.toString();
+        String dataStr = data.format(formatter);
 
         Iterable<ClienteModelo> clientes = cr.findByDataVencimento(dataStr);
 
         List<String> emails = new ArrayList<>();
         clientes.forEach(cliente -> emails.add(cliente.getEmail()));
         return emails;
-
     }
+
 
     public String conteudo(ClienteModelo cliente) {
         if (cliente.getCnpj() != null && !cliente.getCnpj().isEmpty()) {
