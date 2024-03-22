@@ -40,7 +40,6 @@ public class EmailServico {
         return Session.getInstance(props, auth);
     }
     public void enviarEmail(List<String> destinatario, String assunto, String conteudo) {
-
         try {
             Message message = new MimeMessage(getEmailSession());
             message.setFrom(new InternetAddress(emailUsername));
@@ -50,8 +49,8 @@ public class EmailServico {
             }
             message.setRecipients(Message.RecipientType.TO, enderecos);
 
-            message.setSubject("Renove seu Certificado Digital");
-            message.setText(conteudo);
+            message.setSubject(assunto);
+            message.setContent(conteudo, "text/html"); // Define o conteúdo como HTML
 
             Transport.send(message);
             System.out.println("E-mail enviado com sucesso para: " + destinatario);
@@ -77,15 +76,19 @@ public class EmailServico {
 
 
     public String conteudo(ClienteModelo cliente) {
+        String saudacao = String.format("<p>Olá %s,</p>", cliente.getCliente().substring(0, 3));
+        String assinatura = "";
         if (cliente.getCnpj() != null && !cliente.getCnpj().isEmpty()) {
             // CNPJ presente, usar mensagem com Razão Social
-            return String.format("Olá %s,\n\nSua assinatura do tipo %s em nome de %s vencerá dia %s, entre em contato conosco para realizarmos a renovação. Basta responder esse e-mail ou nos ligar nos números...",
-                    cliente.getCliente().substring(0, 3), cliente.getProduto(), cliente.getRazaoSocial(), cliente.getDataVencimento());
+            assinatura = String.format("<p>Sua assinatura do tipo %s em nome de %s vencerá dia %s, entre em contato conosco para realizarmos a renovação. Basta responder esse e-mail ou nos ligar nos números...</p>",
+                    cliente.getProduto(), cliente.getRazaoSocial(), cliente.getDataVencimento());
         } else {
             // CNPJ não presente, usar mensagem com Nome
-            return String.format("Olá %s,\n\nSua assinatura do tipo %s em nome de %s vencerá dia %s, entre em contato conosco para realizarmos a renovação. Basta responder esse e-mail ou nos ligar nos números...",
-                    cliente.getCliente().substring(0, 3), cliente.getProduto(), cliente.getCliente(), cliente.getDataVencimento());
+            assinatura = String.format("<p>Sua assinatura do tipo %s em nome de %s vencerá dia %s, entre em contato conosco para realizarmos a renovação. Basta responder esse e-mail ou nos ligar nos números...</p>",
+                    cliente.getProduto(), cliente.getCliente(), cliente.getDataVencimento());
         }
+        return saudacao + assinatura;
     }
+
 
 }
