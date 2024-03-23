@@ -22,35 +22,34 @@ function Tabela() {
                 throw new Error('Erro ao buscar destinatários');
             }
             const destinatarios = await response.json(); // Receber a lista de destinatários
-            const conteudoEmail = 'Conteúdo do e-mail'; // Definir o conteúdo do e-mail
-            enviarEmails(destinatarios, dataSelecionada, 'Assunto do e-mail', conteudoEmail); // Passar os parâmetros necessários
+            enviarEmails(destinatarios);
         } catch (error) {
             console.error('Erro ao buscar destinatários:', error);
         }
     };
-    
 
-    const enviarEmails = async (destinatarios, dataVencimento) => { // Adicionando dataVencimento como parâmetro
+    const enviarEmails = async (destinatarios) => {
         try {
-            const response = await fetch('http://localhost:8080/enviar-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    dataVencimento: dataVencimento, // Utilizando dataVencimento passado como argumento
-                    destinatarios,
-                    assunto: 'Assunto do e-mail',
-                    conteudo: 'Conteúdo do e-mail'
-                })
+            destinatarios.forEach(async (destinatario) => {
+                const response = await fetch('http://localhost:8080/enviar-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        destinatarios: [destinatario],
+                        assunto: 'Assunto do e-mail',
+                        conteudo: '' // Deixar vazio para utilizar o conteúdo do servidor
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorMessage = await response.text();
+                    throw new Error(`Erro ao enviar e-mail para ${destinatario}: ${errorMessage}`);
+                }
+
+                console.log(`E-mail enviado com sucesso para ${destinatario}.`);
             });
-    
-            if (!response.ok) {
-                const errorMessage = await response.text();
-                throw new Error(`Erro ao enviar e-mails: ${errorMessage}`);
-            }
-    
-            console.log('E-mails enviados com sucesso.');
         } catch (error) {
             console.error('Erro ao enviar e-mails:', error.message);
         }

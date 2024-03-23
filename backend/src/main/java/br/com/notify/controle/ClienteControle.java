@@ -1,6 +1,7 @@
 package br.com.notify.controle;
 
 import br.com.notify.modelo.ClienteModelo;
+import br.com.notify.modelo.EmailPayload;
 import br.com.notify.servico.ClienteServico;
 import br.com.notify.servico.EmailServico;
 import org.apache.coyote.Response;
@@ -53,19 +54,14 @@ public class ClienteControle {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao buscar e-mails: " + e.getMessage());
         }
     }
+
     @PostMapping("/enviar-email")
-    public ResponseEntity<?> enviarEmail(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<?> enviarEmail(@RequestBody EmailPayload payload) {
         try {
-            String dataVencimento = requestBody.get("dataVencimento");
-            String assunto = requestBody.get("assunto");
-            String conteudo = requestBody.get("conteudo");
+            List<String> destinatarios = payload.getDestinatarios();
+            String assunto = payload.getAssunto();
+            String conteudo = payload.getConteudo();
 
-            // Buscar e-mails por data
-            Iterable<String> destinatariosIterable = es.buscarEmail(dataVencimento);
-            List<String> destinatarios = new ArrayList<>();
-            destinatariosIterable.forEach(destinatarios::add);
-
-            // Enviar e-mail para os destinatários
             es.enviarEmail(destinatarios, assunto, conteudo);
 
             return ResponseEntity.ok("E-mails enviados com sucesso.");
@@ -73,7 +69,6 @@ public class ClienteControle {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao enviar e-mails: " + e.getMessage());
         }
     }
-
 
     @GetMapping("")
     public String rota() {

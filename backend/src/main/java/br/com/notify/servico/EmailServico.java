@@ -39,13 +39,13 @@ public class EmailServico {
         return Session.getInstance(props, auth);
     }
 
-    public void enviarEmail(List<String> destinatario, String assunto, String conteudo) {
+    public void enviarEmail(List<String> destinatarios, String assunto, String conteudo) {
         try {
             Message message = new MimeMessage(getEmailSession());
             message.setFrom(new InternetAddress(emailUsername));
-            InternetAddress[] enderecos = new InternetAddress[destinatario.size()];
-            for(int i = 0; i < destinatario.size(); i++){
-                enderecos[i] = new InternetAddress(destinatario.get(i));
+            InternetAddress[] enderecos = new InternetAddress[destinatarios.size()];
+            for(int i = 0; i < destinatarios.size(); i++){
+                enderecos[i] = new InternetAddress(destinatarios.get(i));
             }
             message.setRecipients(Message.RecipientType.TO, enderecos);
 
@@ -53,7 +53,7 @@ public class EmailServico {
             message.setContent(conteudo, "text/html"); // Define o conteúdo como HTML
 
             Transport.send(message);
-            System.out.println("E-mail enviado com sucesso para: " + destinatario);
+            System.out.println("E-mail enviado com sucesso para: " + destinatarios);
         } catch (MessagingException e){
             System.out.println("Erro ao enviar e-mail: " + e.getMessage());
         }
