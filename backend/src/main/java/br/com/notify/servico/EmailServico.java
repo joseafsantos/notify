@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ import java.util.Properties;
 public class EmailServico {
 
     @Value("${email.username}")
-
     private String emailUsername;
 
     @Value("${email.password}")
@@ -33,12 +32,13 @@ public class EmailServico {
         props.put("mail.smtp.port", "587");
 
         Authenticator auth = new Authenticator() {
-            protected PasswordAuthentication getPasswordAutehtication(){
+            protected PasswordAuthentication getPasswordAuthentication(){
                 return new PasswordAuthentication(emailUsername, emailPassword);
             }
         };
         return Session.getInstance(props, auth);
     }
+
     public void enviarEmail(List<String> destinatario, String assunto, String conteudo) {
         try {
             Message message = new MimeMessage(getEmailSession());
@@ -58,6 +58,7 @@ public class EmailServico {
             System.out.println("Erro ao enviar e-mail: " + e.getMessage());
         }
     }
+
     @Autowired
     private ClienteRepositorio cr;
 
@@ -74,7 +75,6 @@ public class EmailServico {
         return emails;
     }
 
-
     public String conteudo(ClienteModelo cliente) {
         String saudacao = String.format("<p>Olá %s,</p>", cliente.getCliente().substring(0, 3));
         String assinatura = "";
@@ -89,6 +89,4 @@ public class EmailServico {
         }
         return saudacao + assinatura;
     }
-
-
 }
