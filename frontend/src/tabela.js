@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 function Tabela() {
     const [dados, setDados] = useState([]);
     const [dataSelecionada, setDataSelecionada] = useState('');
-    const [registrosPorPagina, setRegistrosPorPagina] = useState(15);
     const [paginaAtual, setPaginaAtual] = useState(1);
 
     const handleDataChange = (event) => {
@@ -22,29 +21,29 @@ function Tabela() {
                 throw new Error('Erro ao buscar destinatários');
             }
             const destinatarios = await response.json(); // Receber a lista de destinatários
-            const conteudoEmail = comporConteudoEmail(dados); // Compor o conteúdo do e-mail com base nos resultados da busca
-            enviarEmails(destinatarios, conteudoEmail); // Enviar e-mails com o conteúdo composto
+            const conteudoEmails = comporConteudoEmail(dados); // Compor o conteúdo do e-mail com base nos resultados da busca
+            enviarEmails(destinatarios, conteudoEmails); // Enviar e-mails com o conteúdo composto
         } catch (error) {
             console.error('Erro ao buscar destinatários:', error);
         }
     };
 
     const comporConteudoEmail = (dados) => {
-        let conteudo = '';
-        dados.forEach(item => {
-            conteudo += `<p>Olá ${item.cliente.split(' ')[0]},</p>`; // Obter o primeiro nome do cliente
+        return dados.map(item => {
+            let saudacao = `<p>Olá ${item.cliente.split(' ')[0]},</p>`;
+            let assinatura = '';
             if (item.cnpj) {
-                conteudo += `<p>Sua assinatura do tipo ${item.produto} em nome de ${item.razaoSocial} vencerá dia ${item.dataVencimento}, entre em contato conosco para realizarmos a renovação. Basta responder esse e-mail ou nos ligar nos números...</p>`;
+                assinatura = `<p>Sua assinatura do tipo ${item.produto} com razão social ${item.razaoSocial} vencerá dia ${item.dataVencimento}, entre em contato conosco para realizarmos a renovação. Basta responder esse e-mail ou nos ligar nos números...</p>`;
             } else {
-                conteudo += `<p>Sua assinatura do tipo ${item.produto} em nome de ${item.cliente} vencerá dia ${item.dataVencimento}, entre em contato conosco para realizarmos a renovação. Basta responder esse e-mail ou nos ligar nos números...</p>`;
+                assinatura = `<p>Sua assinatura do tipo ${item.produto} em nome de ${item.cliente} vencerá dia ${item.dataVencimento}, entre em contato conosco para realizarmos a renovação. Basta responder esse e-mail ou nos ligar nos números...</p>`;
             }
+            return saudacao + assinatura;
         });
-        return conteudo;
     };
 
-    const enviarEmails = async (destinatarios, conteudo) => {
+    const enviarEmails = async (destinatarios, conteudoEmails) => {
         try {
-            destinatarios.forEach(async (destinatario) => {
+            destinatarios.forEach(async (destinatario, index) => {
                 const response = await fetch('http://localhost:8080/enviar-email', {
                     method: 'POST',
                     headers: {
@@ -53,7 +52,7 @@ function Tabela() {
                     body: JSON.stringify({
                         destinatarios: [destinatario],
                         assunto: 'Assunto do e-mail',
-                        conteudo: conteudo // Usar o conteúdo do e-mail composto
+                        conteudo: conteudoEmails[index] // Usar o conteúdo do e-mail composto
                     })
                 });
 
@@ -62,7 +61,7 @@ function Tabela() {
                     throw new Error(`Erro ao enviar e-mail para ${destinatario}: ${errorMessage}`);
                 }
 
-                console.log(`E-mail enviado com sucesso para ${destinatario}.`);
+                console.log(`E-mail enviado com sucesso.`);
             });
         } catch (error) {
             console.error('Erro ao enviar e-mails:', error.message);
@@ -75,7 +74,7 @@ function Tabela() {
 
     const fetchDados = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/listar-data?dataVencimento=${dataSelecionada}&pagina=${paginaAtual}&registrosPorPagina=${registrosPorPagina}`);
+            const response = await fetch(`http://localhost:8080/listar-data?dataVencimento=${dataSelecionada}&pagina=${paginaAtual}`);
             if (!response.ok) {
                 throw new Error('Erro ao carregar dados do servidor');
             }
@@ -91,18 +90,18 @@ function Tabela() {
             <h1>Tabela de Dados</h1>
             <label htmlFor="dataSelecionada">Selecione uma data:</label>
             <input type="text" id="dataSelecionada" value={dataSelecionada} onChange={handleDataChange} />
-            <table className='table'>
+            <table>
                 <thead>
                     <tr>
                         <th>Pedido</th>
                         <th>Data de Vencimento</th>
                         <th>Cliente</th>
-                        <th>Razão Social</th>
                         <th>Email</th>
                         <th>Telefone</th>
                         <th>Produto</th>
                         <th>CPF</th>
                         <th>CNPJ</th>
+                        <th>Razão Social</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,12 +110,12 @@ function Tabela() {
                             <td>{item.pedido}</td>
                             <td>{item.dataVencimento}</td>
                             <td>{item.cliente}</td>
-                            <td>{item.razaoSocial}</td>
                             <td>{item.email}</td>
                             <td>{item.telefone}</td>
                             <td>{item.produto}</td>
                             <td>{item.cpf}</td>
                             <td>{item.cnpj}</td>
+                            <td>{item.razaoSocial}</td>
                         </tr>
                     ))}
                 </tbody>

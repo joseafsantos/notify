@@ -6,9 +6,16 @@ import UploadFile from './uploadFile';
 function App() {
   return (
     <div className="App">
+      <br>
+      </br>
       <Formulario />
-      <Tabela />
+      <br>
+      </br>
       <UploadFile />
+      <br>
+      </br>
+      <Tabela />
+      
     </div>
   );
 }
