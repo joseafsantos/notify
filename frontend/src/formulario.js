@@ -61,38 +61,57 @@ function Formulario() {
     }
   };
 
+  // Função para limpar os campos do formulário
+  const handleLimparFormulario = () => {
+    setPedido('');
+    setDataVencimento('');
+    setCliente('');
+    setEmail('');
+    setTelefone('');
+    setProduto('');
+    setCPF('');
+    setCNPJ('');
+    setRazaoSocial('');
+  };
+
   return (
     <div>
       <h2>Formulário de Cadastro</h2>
-      <form onSubmit={handleSubmit}>
-        <label>Pedido:</label>
-        <input type="text" value={pedido} onChange={(e) => setPedido(e.target.value)} required /><br />
-        
-        <label>Data de Vencimento:</label>
-        <input type="text" value={dataVencimento} onChange={(e) => setDataVencimento(e.target.value)} required /><br />
+      <form onSubmit={handleSubmit} style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ width: '50%', textAlign: 'left', marginRight: '20px', marginLeft: '20px'}}>
+          <label>Pedido:</label>
+          <input type="text" value={pedido} onChange={(e) => setPedido(e.target.value)} required className='form-control'/><br />
 
-        <label>Cliente:</label>
-        <input type="text" value={cliente} onChange={(e) => setCliente(e.target.value)} required /><br />
+          <label>Cliente:</label>
+          <input type="text" value={cliente} onChange={(e) => setCliente(e.target.value)} required className='form-control'/><br />
+          
+          <label>CPF:</label>
+          <input type="text" value={cpf} onChange={(e) => setCPF(e.target.value)} required className='form-control'/><br />
 
-        <label>Email:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /><br />
+          <label>Email:</label>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className='form-control'/><br />
 
-        <label>Telefone:</label>
-        <input type="text" value={telefone} onChange={(e) => setTelefone(e.target.value)} required /><br />
+          <label>Telefone:</label>
+          <input type="text" value={telefone} onChange={(e) => setTelefone(e.target.value)} required className='form-control'/><br />
+        </div>
+        <div style={{ width: '50%', textAlign: 'left' }}>
+          <label>Produto:</label>
+          <input type="text" value={produto} onChange={(e) => setProduto(e.target.value)} required className='form-control'/><br />
 
-        <label>Produto:</label>
-        <input type="text" value={produto} onChange={(e) => setProduto(e.target.value)} required /><br />
+          <label>CNPJ:</label>
+          <input type="text" value={cnpj} onChange={(e) => setCNPJ(e.target.value)} className='form-control'/><br />
 
-        <label>CPF:</label>
-        <input type="text" value={cpf} onChange={(e) => setCPF(e.target.value)} required /><br />
+          <label>Razão Social:</label>
+          <input type="text" value={razaoSocial} onChange={(e) => setRazaoSocial(e.target.value)} className='form-control'/><br />
 
-        <label>CNPJ:</label>
-        <input type="text" value={cnpj} onChange={(e) => setCNPJ(e.target.value)} /><br />
+          <label>Data de Vencimento:</label>
+          <input type="text" value={dataVencimento} onChange={(e) => setDataVencimento(e.target.value)} required className='form-control'/><br />
 
-        <label>Razão Social:</label>
-        <input type="text" value={razaoSocial} onChange={(e) => setRazaoSocial(e.target.value)} /><br />
-
-        <button type="submit">Enviar</button>
+          <div style={{ display: 'flex', justifyContent: 'left', width: '100%'}}>
+          <button type="submit" style={{ marginRight: '10px', marginTop: '24px' }} className='btn btn-success'>Enviar</button><br />
+          <button type="button" onClick={handleLimparFormulario} style={{ marginLeft: '10px', marginTop: '24px' }}className='btn btn-secondary'>Limpar Formulário</button>
+          </div>
+        </div>
       </form>
     </div>
   );

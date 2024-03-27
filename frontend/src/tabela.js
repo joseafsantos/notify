@@ -87,45 +87,41 @@ function Tabela() {
 
     return (
         <div>
-            <h1>Tabela de Dados</h1>
+            <h2>Tabela de Dados</h2>
             <label htmlFor="dataSelecionada">Selecione uma data:</label>
-            <input type="text" id="dataSelecionada" value={dataSelecionada} onChange={handleDataChange} />
+            <input type="text" id="dataSelecionada" value={dataSelecionada} onChange={handleDataChange} placeholder='00/00/00'/>
             <table>
                 <thead>
                     <tr>
                         <th>Pedido</th>
-                        <th>Data de Vencimento</th>
                         <th>Cliente</th>
+                        <th>CPF</th>
                         <th>Email</th>
                         <th>Telefone</th>
                         <th>Produto</th>
-                        <th>CPF</th>
                         <th>CNPJ</th>
                         <th>Razão Social</th>
+                        <th>Data de Vencimento</th>
                     </tr>
                 </thead>
                 <tbody>
                     {dados.map((item, index) => (
                         <tr key={index}>
                             <td>{item.pedido}</td>
-                            <td>{item.dataVencimento}</td>
                             <td>{item.cliente}</td>
+                            <td>{item.cpf}</td>
                             <td>{item.email}</td>
                             <td>{item.telefone}</td>
                             <td>{item.produto}</td>
-                            <td>{item.cpf}</td>
                             <td>{item.cnpj}</td>
                             <td>{item.razaoSocial}</td>
+                            <td>{item.dataVencimento}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <button onClick={buscarDestinatarios}>Notificar</button>
-            {/* Adicionar navegação por páginas */}
-            <div>
-                <button onClick={() => handlePaginaChange(paginaAtual - 1)} disabled={paginaAtual === 1}>Anterior</button>
-                <button onClick={() => handlePaginaChange(paginaAtual + 1)}>Próxima</button>
-            </div>
+            <button onClick={buscarDestinatarios} className='btn btn-success'>Notificar</button>
+            
         </div>
     );
 }
