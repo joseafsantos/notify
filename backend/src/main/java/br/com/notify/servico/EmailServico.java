@@ -76,18 +76,4 @@ public class EmailServico {
         return emails;
     }
 
-    public String conteudo(ClienteModelo cliente) {
-        String saudacao = String.format("<p>Olá %s,</p>", cliente.getCliente().substring(0, 3));
-        String assinatura = "";
-        if (cliente.getCnpj() != null && !cliente.getCnpj().isEmpty()) {
-            // CNPJ presente, usar mensagem com Razão Social
-            assinatura = String.format("<p>Sua assinatura do tipo %s em nome de %s vencerá dia %s, entre em contato conosco para realizarmos a renovação. Basta responder esse e-mail ou nos ligar nos números...</p>",
-                    cliente.getProduto(), cliente.getRazaoSocial(), cliente.getDataVencimento());
-        } else {
-            // CNPJ não presente, usar mensagem com Nome
-            assinatura = String.format("<p>Sua assinatura do tipo %s em nome de %s vencerá dia %s, entre em contato conosco para realizarmos a renovação. Basta responder esse e-mail ou nos ligar nos números...</p>",
-                    cliente.getProduto(), cliente.getCliente(), cliente.getDataVencimento());
-        }
-        return saudacao + assinatura;
-    }
 }

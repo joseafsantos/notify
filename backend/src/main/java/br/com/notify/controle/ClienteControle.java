@@ -31,17 +31,6 @@ public class ClienteControle {
         return cs.listarDataVencimento(dataVencimento);
     }
 
-    @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrar(@RequestBody ClienteModelo cm) {
-        return cs.cadastrar(cm);
-    }
-
-    // Sobrecarga do método cadastrar para lidar com uma lista de objetos ClienteModelo
-    @PostMapping("/cadastrar-multiplos")
-    public ResponseEntity<?> cadastrarMultiplos(@RequestBody List<ClienteModelo> clientes) {
-        return cs.cadastrarMultiplos(clientes);
-    }
-
     @Autowired
     private EmailServico es;
 
@@ -53,6 +42,17 @@ public class ClienteControle {
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao buscar e-mails: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/cadastrar")
+    public ResponseEntity<?> cadastrar(@RequestBody ClienteModelo cm) {
+        return cs.cadastrar(cm);
+    }
+
+    // Sobrecarga do método cadastrar para lidar com uma lista de objetos ClienteModelo
+    @PostMapping("/cadastrar-multiplos")
+    public ResponseEntity<?> cadastrarMultiplos(@RequestBody List<ClienteModelo> clientes) {
+        return cs.cadastrarMultiplos(clientes);
     }
 
     @PostMapping("/enviar-email")

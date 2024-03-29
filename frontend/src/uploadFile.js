@@ -39,7 +39,7 @@ function UploadFile() {
         <div>
             <h2>Envio de CSV</h2>
             <input type="file" onChange={handleFileChange} />
-            <button onClick={handleUpload}>Enviar</button>
+            <button onClick={handleUpload} className='btn btn-success'>Enviar</button>
         </div>
     );
 }
