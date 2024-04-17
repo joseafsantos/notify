@@ -51,7 +51,7 @@ function Tabela() {
                     },
                     body: JSON.stringify({
                         destinatarios: [destinatario],
-                        assunto: 'Assunto do e-mail',
+                        assunto: 'Seu Certificado Digital está vencendo',
                         conteudo: conteudoEmails[index] // Usar o conteúdo do e-mail composto
                     })
                 });
